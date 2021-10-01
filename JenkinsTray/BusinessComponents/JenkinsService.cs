@@ -66,8 +66,8 @@ namespace JenkinsTray.BusinessComponents
 
             foreach (XmlNode jobElement in jobElements)
             {
-                var projectName = jobElement.SelectSingleNode("name").InnerText;
                 var projectUrl = jobElement.SelectSingleNode("url").InnerText;
+                var projectName = jobElement.SelectSingleNode("name").InnerText + " (" + projectUrl + ")";
                 var projectColor = jobElement.SelectSingleNode("color");
                 // If the job is a folder we need to recursively get the jobs within.
                 if (jobElement.SelectSingleNode("color") == null)
@@ -120,6 +120,7 @@ namespace JenkinsTray.BusinessComponents
             xml.LoadXml(xmlStr);
 
             var displayName = XmlUtils.SelectSingleNodeText(xml, "/*/displayName");
+            var fullName = XmlUtils.SelectSingleNodeText(xml, "/*/fullName");
             var inQueue = XmlUtils.SelectSingleNodeBoolean(xml, "/*/inQueue");
             var inQueueSince = XmlUtils.SelectSingleNodeText(xml, "/*/queueItem/inQueueSince");
             var queueId = XmlUtils.SelectSingleNodeText(xml, "/*/queueItem/id");
@@ -131,7 +132,7 @@ namespace JenkinsTray.BusinessComponents
             var lastSuccessfulBuildUrl = XmlUtils.SelectSingleNodeText(xml, "/*/lastSuccessfulBuild/url");
             var lastFailedBuildUrl = XmlUtils.SelectSingleNodeText(xml, "/*/lastFailedBuild/url");
 
-            project.DisplayName = displayName;
+            project.DisplayName = fullName;
             project.Queue.InQueue = inQueue.HasValue && inQueue.Value;
             if (!string.IsNullOrEmpty(queueId))
             {
